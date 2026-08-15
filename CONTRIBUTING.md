@@ -1,7 +1,7 @@
 # Contributing to watermarks-remover
 
 Thanks for helping keep the skill accurate and the cleaners reliable. The
-project is a small Python skill (`skills/remove-ai-marks/`) plus tests —
+project is a small Python skill (`skills/remove-ai-marks/`) plus tests;
 focused PRs land fastest.
 
 ## Who can do what
@@ -11,7 +11,7 @@ focused PRs land fastest.
 | Open issues | Anyone |
 | Suggest a release | Anyone (use the **Release suggestion** issue template) |
 | Open pull requests | Anyone (fork the repo) |
-| Approve and merge pull requests | Maintainer only (`@guillaumemeyer`) |
+| Approve and merge pull requests | Maintainer only (`@yasir-mo`) |
 
 `main` is protected. A change needs a pull request, a passing **CI** check
 (`test`), and an approving review from the code owner before merge. Only the
@@ -32,7 +32,7 @@ issue.
 
 | Path | Role |
 | --- | --- |
-| `skills/remove-ai-marks/SKILL.md` | Agent skill entry (workflow, ethics) — remote client over HTTP |
+| `skills/remove-ai-marks/SKILL.md` | Agent skill entry (workflow, ethics); remote client over HTTP |
 | `skills/remove-ai-marks/references/` | Vendors, mark classes, matrix, ethics |
 | `service/scripts/` | Layer A/B hooks + image/container cleaners + `server.py` HTTP service |
 | `service/Dockerfile*` | Container images (core + optional backends) |
@@ -43,13 +43,13 @@ issue.
 
 ## Layers (what to change where)
 
-1. **Layer A (Unicode / format controls)** — deterministic scripts under
+1. **Layer A (Unicode / format controls)**; deterministic scripts under
    `service/scripts/` (`text_unicode.py`, `clean_text.py`, `inspect_text.py`). Prefer
    tests with fixtures in `tests/fixtures/`.
-2. **Layer B (statistical rewrite)** — guidance in `SKILL.md` plus optional
+2. **Layer B (statistical rewrite)**; guidance in `SKILL.md` plus optional
    `rewrite_text.py` (print-prompt default; ollama / openai-compatible). No
    bundled model. Keep ethics-aware.
-3. **Files (C2PA / EXIF / XMP / props)** — `image_meta.py` (PNG/JPEG),
+3. **Files (C2PA / EXIF / XMP / props)**; `image_meta.py` (PNG/JPEG),
    `container_meta.py` (SVG/PDF/DOCX/ODT/HTML/MD), unified
    `inspect_file.py` / `clean_file.py`. Preserve document body / pixels;
    strip provenance metadata only.
@@ -75,7 +75,7 @@ and which layer failed or is missing.
 
 ## Community
 
-- [Code of Conduct](CODE_OF_CONDUCT.md) — expected behaviour in the project
-- [Security policy](SECURITY.md) — how to report vulnerabilities privately
+- [Code of Conduct](CODE_OF_CONDUCT.md); expected behaviour in the project
+- [Security policy](SECURITY.md); how to report vulnerabilities privately
 - [Bug report](.github/ISSUE_TEMPLATE/bug_report.md) and
   [feature request](.github/ISSUE_TEMPLATE/feature_request.md) templates

@@ -16,12 +16,12 @@ Multi-vendor anti-detection hygiene for **text** (Unicode + statistical rewrite)
 
 Read if needed:
 
-- `references/mark-classes.md` — Unicode / sampling / C2PA / containers
-- `references/vendor-notes.md` — Claude, Gemini/SynthID, OpenAI, open-LLM
-- `references/removal-matrix.md` — which layer when
-- `references/ethics.md` — intended use
-- `references/how-claude-marks.md` — Anthropic-specific detail
-- `references/markdiffusion.md` — optional MarkDiffusion image harness (schemes, honesty caveats)
+- `references/mark-classes.md`; Unicode / sampling / C2PA / containers
+- `references/vendor-notes.md`; Claude, Gemini/SynthID, OpenAI, open-LLM
+- `references/removal-matrix.md`; which layer when
+- `references/ethics.md`; intended use
+- `references/how-claude-marks.md`; Anthropic-specific detail
+- `references/markdiffusion.md`; optional MarkDiffusion image harness (schemes, honesty caveats)
 
 This skill is a **thin client**. All deterministic cleaning machinery runs in a
 separate HTTP service (this repo's `service/`), so the agent host needs no
@@ -38,7 +38,7 @@ WM="${WATERMARKS_SERVICE_URL:-http://127.0.0.1:8765}"
 
 The service is started either by the operator (`docker compose up -d`, or a
 published GHCR image) or locally (`make serve`). **Always check it first**, and
-stop with a clear message if it is unreachable — never fall back to local
+stop with a clear message if it is unreachable; never fall back to local
 cleaning:
 
 ```bash
@@ -68,13 +68,13 @@ field and writes it to the output path itself.
 
 | Method | Path | Body | Returns |
 | --- | --- | --- | --- |
-| GET | `/health` | — | `{"ok": true, "version": ...}` |
-| GET | `/capabilities` | — | optional tools / backends present |
-| GET | `/openapi.json` | — | dynamically generated OpenAPI 3.0.3 spec |
+| GET | `/health` |; | `{"ok": true, "version": ...}` |
+| GET | `/capabilities` |; | optional tools / backends present |
+| GET | `/openapi.json` |; | dynamically generated OpenAPI 3.0.3 spec |
 | POST | `/inspect` | `{"file": "<base64>", "name": "notes.md"}` | `{"ok", "kind", "suspicious", "report"}` |
 | POST | `/clean` | `{"file": "<base64>", "name": "notes.md", "options": {...}}` | `{"ok", "kind", "cleaned": "<base64>", "report"}` |
 
-The machine-readable contract lives at `$WM/openapi.json` — plug it into any
+The machine-readable contract lives at `$WM/openapi.json`; plug it into any
 OpenAPI tooling (client generators, Swagger UI, editors) instead of hand-rolling
 clients.
 
@@ -135,7 +135,7 @@ Show a short summary (suspicious codepoints; C2PA/AI flags; confidence labels
 Optional pixel-domain **detection** (SynthID score) and pixel **removal**
 (CtrlRegen / DiffusionPurification) and the MarkDiffusion/MarkLLM harnesses are
 external heavy backends. They run in the service's optional containers or host
-checkouts — check `/capabilities` before promising them, and never pretend a
+checkouts; check `/capabilities` before promising them, and never pretend a
 local detector is an official vendor detector.
 
 ### 3. Deterministic clean (always for matching inputs)
@@ -151,9 +151,9 @@ Decode `cleaned` → `OUTPUT` (`*.cleaned.*` unless the user asked in-place).
 Re-inspect the result when residual risk matters.
 
 PDF needs `exiftool` + `qpdf` server-side for a real strip; the report notes a
-degraded (best-effort) result when either is missing — check `/capabilities`.
+degraded (best-effort) result when either is missing; check `/capabilities`.
 
-**Images — optional pixel removal:** only when `capabilities.pixel_backends`
+**Images; optional pixel removal:** only when `capabilities.pixel_backends`
 says the backend is present:
 
 ```bash
@@ -162,11 +162,11 @@ curl -s -X POST "$WM/clean" -H 'Content-Type: application/json' \
        \"options\": {\"remove_pixel\": \"ctrlregen\"}}"
 ```
 
-### 4. Layer B — always offer rewrite (prose)
+### 4. Layer B; always offer rewrite (prose)
 
 After Layer A, **always propose** a statistical-mark reduction pass for natural-language content. Do not skip this step silently.
 
-The service does **not** hold a rewrite model — **you** are the rewrite model.
+The service does **not** hold a rewrite model; **you** are the rewrite model.
 Run the prompts below on the cleaned text with a model **≠ suspected origin**
 (Claude text → not Claude; Gemini → not Gemini; etc.). Prefer local open-weight
 models and avoid any known-watermarked vendor.
@@ -174,8 +174,8 @@ models and avoid any known-watermarked vendor.
 Multi-pass recipe:
 
 1. Layer A clean (via `/clean`)  
-2. Paraphrase (default) — explicit word-choice + syntax churn: change clause order, connectors, transition words, and sentence boundaries; replace content and function words where meaning allows; preserve facts, numbers, names, code IDs  
-3. Optional strong pass — `humanize` (natural-human prose), back-translate, or structural outline→regen  
+2. Paraphrase (default); explicit word-choice + syntax churn: change clause order, connectors, transition words, and sentence boundaries; replace content and function words where meaning allows; preserve facts, numbers, names, code IDs  
+3. Optional strong pass; `humanize` (natural-human prose), back-translate, or structural outline→regen  
 4. Layer A again on the result (`/clean`)  
 5. Report residual risk honestly (short/highly predictable text = lower; long, high-entropy prose = higher)  
 
@@ -212,8 +212,8 @@ claims. Output only the rewritten text.
 **Code (comments / docstrings / identifiers):**
 
 ```
-Rewrite the natural-language parts of this code — comments, docstrings, and
-string literals — using different wording. Rename local variables, function
+Rewrite the natural-language parts of this code; comments, docstrings, and
+string literals; using different wording. Rename local variables, function
 parameters, and private helper names to semantically equivalent names. Preserve
 program behavior, public API names, and all values that affect output. Output
 only the rewritten code.
@@ -263,7 +263,7 @@ Or against a local checkout of the repo: `python3 service/scripts/audit_dir.py D
 
 Always state:
 
-- What Layer A / container clean **verifiably** removed (counts, actions) — from `report`.
+- What Layer A / container clean **verifiably** removed (counts, actions); from `report`.
 - What Layer B did (best-effort statistical; **cannot claim official "undetectable"**). Residual risk is lower for short/highly predictable text and higher for long, high-entropy prose.
 - Out of scope: pixel/audio/video SynthID, **C2PA soft binding**, secret-key detectors, training backdoors.
 - Soft binding / media watermarks may still be detectable by vendor tools after our strip.
@@ -277,11 +277,11 @@ Always state:
 - PDF strip is best-effort without `exiftool`, and incomplete without `qpdf` server-side.
 - Pixel-domain **image** watermarks can be removed optionally via the external CtrlRegen backend (`remove_pixel: ctrlregen`) or MarkDiffusion's DiffusionPurification (`remove_pixel: diffusion`); both are heavy, drift the image, and need the backend present (`/capabilities`). Audio/video watermarks remain out of scope.
 - The reverse-SynthID scorer is external, best-effort, and under a non-commercial Research License; not an official Google detector.
-- **C2PA soft binding** (content watermark that re-links to a remote manifest after metadata strip) is out of scope — stripping hard-bound C2PA does not clear it.
+- **C2PA soft binding** (content watermark that re-links to a remote manifest after metadata strip) is out of scope; stripping hard-bound C2PA does not clear it.
 - Data-driven / backdoor model marks (trigger phrases) are out of scope.
 
 ## Service not reachable?
 
 If `$WM/health` fails: tell the user the service is down and how to start it
 (`docker compose up -d`, `make serve`, or the published GHCR image). Do **not**
-attempt to clean locally — this skill contains no cleaning code.
+attempt to clean locally; this skill contains no cleaning code.

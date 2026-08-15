@@ -14,7 +14,7 @@ Invisible or near-invisible characters, exotic spaces, bidi controls, tag charac
 | `space` | NBSP, em space, ideographic space |
 | `confusable` | Cyrillic/fullwidth Latin (aggressive) |
 
-**Removal:** `clean_text.py` / Layer A — deterministic, verifiable.
+**Removal:** `clean_text.py` / Layer A; deterministic, verifiable.
 
 Load-bearing invisibles are preserved by default so real text is not corrupted: emoji glue (ZWJ/VS after an emoji base), script joiners (ZWNJ/ZWJ inside complex scripts like Persian or Devanagari), flag tag-char sequences, same-script fillers/selectors (Mongolian free variation selectors after a Mongolian letter, Khmer inherent vowels after a Khmer consonant, Hangul jamo fillers in a partial syllable), and orthographic Arabic/Syriac `Cf` marks. The same characters between plain ASCII stay carriers and are still stripped. Use `--strip-emoji-glue` for paranoid mode (strips all of them).
 
@@ -42,8 +42,8 @@ Industry framing (C2PA + SynthID two-layer model; see Institute of AI PM guide i
 
 | Layer | Mechanism | Survives metadata strip? | This project |
 | --- | --- | --- | --- |
-| **Hard-bound C2PA** | Signed manifest *in* the file | No — strip/re-encode drops it | **In scope** — `clean_file` / `clean_image` |
-| **Soft binding** | Imperceptible watermark *in content* that can resolve to a remote manifest | Yes (by design) | **Out of scope** — pixel/audio/video signal |
+| **Hard-bound C2PA** | Signed manifest *in* the file | No; strip/re-encode drops it | **In scope**; `clean_file` / `clean_image` |
+| **Soft binding** | Imperceptible watermark *in content* that can resolve to a remote manifest | Yes (by design) | **Out of scope**; pixel/audio/video signal |
 | **Standalone SynthID-class** | Pixel / waveform / token watermark without needing C2PA | Yes for media; text is weaker | Media OOS; text → Layer B best-effort |
 
 | Format | Support |
@@ -55,7 +55,7 @@ Industry framing (C2PA + SynthID two-layer model; see Institute of AI PM guide i
 | HTML | Meta generator / JSON-LD / data-ai* |
 | Markdown | YAML frontmatter AI keys |
 
-**Removal:** `clean_file.py` / `clean_image.py` — usually verifiable by re-inspect.
+**Removal:** `clean_file.py` / `clean_image.py`; usually verifiable by re-inspect.
 
 **Honest report:** after a successful C2PA strip, soft-bound / pixel SynthID (if the generator used them) may still be detectable by vendor tools (e.g. SynthID Detector, Content Credentials verify sites).
 

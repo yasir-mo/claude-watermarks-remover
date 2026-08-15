@@ -8,12 +8,12 @@ _ _ _ ____ ___ ____ ____ _  _ ____ ____ _  _ ____    ____ ____ _  _ ____ _  _ __
 
 <!-- logo: figlet -d .figlet -f cybermedium -w 120 "watermarks-remover" -->
 
-[![CI](https://github.com/guillaumemeyer/watermarks-remover/actions/workflows/ci.yml/badge.svg)](https://github.com/guillaumemeyer/watermarks-remover/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/guillaumemeyer/watermarks-remover)](https://github.com/guillaumemeyer/watermarks-remover/releases)
-[![Stars](https://img.shields.io/github/stars/guillaumemeyer/watermarks-remover)](https://github.com/guillaumemeyer/watermarks-remover/stargazers)
-[![Forks](https://img.shields.io/github/forks/guillaumemeyer/watermarks-remover)](https://github.com/guillaumemeyer/watermarks-remover/forks)
+[![CI](https://github.com/yasir-mo/claude-watermarks-remover/actions/workflows/ci.yml/badge.svg)](https://github.com/yasir-mo/claude-watermarks-remover/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/yasir-mo/claude-watermarks-remover)](https://github.com/yasir-mo/claude-watermarks-remover/releases)
+[![Stars](https://img.shields.io/github/stars/yasir-mo/claude-watermarks-remover)](https://github.com/yasir-mo/claude-watermarks-remover/stargazers)
+[![Forks](https://img.shields.io/github/forks/yasir-mo/claude-watermarks-remover)](https://github.com/yasir-mo/claude-watermarks-remover/forks)
 
-Agent skill + stdlib Python service to strip **multi-vendor AI provenance marks** from text and files — for privacy and hygiene on content **you own**. The skill is a thin client: it drives the machinery over HTTP, so the agent host needs no Python.
+Agent skill + stdlib Python service to strip **multi-vendor AI provenance marks** from text and files; for privacy and hygiene on content **you own**. The skill is a thin client: it drives the machinery over HTTP, so the agent host needs no Python.
 
 | Layer | Target | How |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ Agent skill + stdlib Python service to strip **multi-vendor AI provenance marks*
 
 Vendors / ecosystems (class-level): **Claude**, **Gemini / SynthID-Text**, **OpenAI** provenance surfaces, **open-LLM** Kirchenbauer-style marks.
 
-**Latest release:** [v0.5.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.5.0)
+**Latest release:** [v0.5.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.5.0)
 
 Skill path: [`skills/remove-ai-marks/`](skills/remove-ai-marks/)  
 Service path: [`service/`](service/)  
@@ -31,7 +31,7 @@ Service path: [`service/`](service/)
 
 ## Install (agent skill)
 
-The skill ships **no code** — it calls the service over HTTP. Install the skill (markdown only) and start the service, then set `WATERMARKS_SERVICE_URL` if it is not `http://127.0.0.1:8765`.
+The skill ships **no code**; it calls the service over HTTP. Install the skill (markdown only) and start the service, then set `WATERMARKS_SERVICE_URL` if it is not `http://127.0.0.1:8765`.
 
 ```bash
 # Grok Build / project-local
@@ -47,7 +47,7 @@ Invoke with `/remove-ai-marks` or ask to “strip AI watermarks / C2PA / Claude 
 
 ### Start the service
 
-The fastest path is a local HTTP server (Python 3.10+ stdlib only — no deps, no Docker):
+The fastest path is a local HTTP server (Python 3.10+ stdlib only; no deps, no Docker):
 
 ```bash
 make serve                 # http://127.0.0.1:8765
@@ -57,13 +57,13 @@ python3 service/scripts/server.py --host 127.0.0.1 --port 8765
 
 For the whole infra (core + optional harness/heavy backends), see [Docker / compose](#docker--compose) below.
 
-Optional system tools (auto-used when present — preinstalled in the core Docker image):
+Optional system tools (auto-used when present; preinstalled in the core Docker image):
 
 | Tool | Role |
 | --- | --- |
 | [`c2patool`](https://github.com/contentauth/c2pa-rs/tree/main/cli) | Inspect C2PA manifests |
 | [`exiftool`](https://exiftool.org/) | Residual metadata strip (esp. **PDF**) |
-| [`qpdf`](https://qpdf.sourceforge.io/) | Structural PDF rebuild — **required** for a real PDF strip (see below) |
+| [`qpdf`](https://qpdf.sourceforge.io/) | Structural PDF rebuild - **required** for a real PDF strip (see below) |
 
 Core scripts need **Python 3.10+** stdlib only. Layer B model calls are optional.
 
@@ -82,9 +82,9 @@ python3 "$SCRIPTS/clean_file.py" notes.docx -o notes.cleaned.docx
 python3 "$SCRIPTS/inspect_text.py" draft.md
 python3 "$SCRIPTS/clean_text.py" draft.md -o draft.cleaned.md --stats
 
-# Layer B rewrite hook (default: print prompt only — no model required)
+# Layer B rewrite hook (default: print prompt only; no model required)
 python3 "$SCRIPTS/rewrite_text.py" draft.md --backend print-prompt --strength paraphrase
-# Optional local Ollama (loopback only by default — remote endpoints require
+# Optional local Ollama (loopback only by default; remote endpoints require
 # WATERMARKS_REWRITE_ALLOW_REMOTE=1 or --allow-remote):
 # WATERMARKS_REWRITE_BACKEND=ollama WATERMARKS_REWRITE_MODEL=llama3.2 \
 #   python3 "$SCRIPTS/rewrite_text.py" draft.md -o draft.rewritten.md
@@ -99,8 +99,8 @@ python3 "$SCRIPTS/clean_image.py" shot.png -o shot.cleaned.png
 
 `inspect_text.py`, `clean_text.py` and `rewrite_text.py` operate on text. Pointed
 at a `.docx`, `.pdf` or image they used to decode the compressed bytes and report
-whatever codepoints fell out — noise that tracks the compression, not the
-content — and `clean_text.py` then wrote those mangled bytes back, destroying the
+whatever codepoints fell out; noise that tracks the compression, not the
+content; and `clean_text.py` then wrote those mangled bytes back, destroying the
 file. They now refuse binary input and name the tool that handles it:
 
 ```bash
@@ -115,13 +115,13 @@ other than UTF-8 keeps working. `--force-text` overrides it everywhere.
 
 ## HTTP service
 
-The same machinery runs as a stdlib HTTP service (`service/scripts/server.py`) — the interface the skill uses and the way any web app can integrate without vendoring:
+The same machinery runs as a stdlib HTTP service (`service/scripts/server.py`); the interface the skill uses and the way any web app can integrate without vendoring:
 
 | Method | Path | Body | Returns |
 | --- | --- | --- | --- |
-| GET | `/health` | — | `{"ok": true, "version": ...}` |
-| GET | `/capabilities` | — | optional tools / backends present |
-| GET | `/openapi.json` | — | dynamically generated OpenAPI 3.0.3 spec |
+| GET | `/health` | - | `{"ok": true, "version": ...}` |
+| GET | `/capabilities` | - | optional tools / backends present |
+| GET | `/openapi.json` | - | dynamically generated OpenAPI 3.0.3 spec |
 | POST | `/inspect` | `{"file": "<base64>", "name": "notes.md"}` | `{"ok", "kind", "suspicious", "report"}` |
 | POST | `/clean` | `{"file": "<base64>", "name": "notes.md", "options": {...}}` | `{"ok", "kind", "cleaned": "<base64>", "report"}` |
 
@@ -141,11 +141,11 @@ Published images (GHCR):
 
 | Image tag | Contents | Published? |
 | --- | --- | --- |
-| `ghcr.io/guillaumemeyer/watermarks-remover:<tag>` / `:latest` | Core HTTP service + all cleaners + exiftool / qpdf / c2patool | Yes |
+| `ghcr.io/yasir-mo/claude-watermarks-remover:<tag>` / `:latest` | Core HTTP service + all cleaners + exiftool / qpdf / c2patool | Yes |
 | `…:markllm-<tag>` / `:markllm-latest` | MarkLLM text-watermark harness (Apache-2.0 upstream) | Yes |
 | `…:markdiffusion-<tag>` / `:markdiffusion-latest` | MarkDiffusion image harness (Apache-2.0 upstream) | Yes |
-| `watermarks-remover-ctrlregen:local` | CtrlRegen pixel removal — **never published** (`noai-watermark` ships no LICENSE) | Local build only |
-| `watermarks-remover-synthid-scorer:local` | reverse-SynthID scorer — **never published** (non-commercial Research License) | Local build only |
+| `watermarks-remover-ctrlregen:local` | CtrlRegen pixel removal - **never published** (`noai-watermark` ships no LICENSE) | Local build only |
+| `watermarks-remover-synthid-scorer:local` | reverse-SynthID scorer - **never published** (non-commercial Research License) | Local build only |
 
 Build and run the core service:
 
@@ -166,7 +166,7 @@ docker compose --profile heavy up -d         # + ctrlregen / synthid (local buil
 docker compose --profile harness --profile heavy up -d   # all services
 ```
 
-The compose stack maps the core service to `127.0.0.1:8765`. The harness/heavy services are one-shot CLIs — invoke with `docker compose run --rm <service> …` when you need verification or pixel work.
+The compose stack maps the core service to `127.0.0.1:8765`. The harness/heavy services are one-shot CLIs; invoke with `docker compose run --rm <service> …` when you need verification or pixel work.
 
 Validate the running stack (exit code only, no output on success):
 
@@ -178,7 +178,7 @@ Checks `wr-core` via `GET /health` and runs each harness/heavy service with `--h
 
 ### Configuration (env vars for docker compose)
 
-**Nothing is required to clean arbitrary text** — the core service works out of the box:
+**Nothing is required to clean arbitrary text**; the core service works out of the box:
 
 ```bash
 echo "Hello\u200bWorld\u00ad!" > /tmp/sample.txt
@@ -193,7 +193,7 @@ cp .env.example .env       # then edit
 docker compose up -d       # picks up .env automatically
 ```
 
-`.env` is **gitignored** (deny-by-default) — never commit it. For host-side CLI runs (`rewrite_text.py`, the skill), export the same file into the environment:
+`.env` is **gitignored** (deny-by-default); never commit it. For host-side CLI runs (`rewrite_text.py`, the skill), export the same file into the environment:
 
 ```bash
 set -a; . ./.env; set +a; python3 service/scripts/rewrite_text.py /tmp/x.txt -o /tmp/x.rewritten.txt
@@ -207,7 +207,7 @@ set -a; . ./.env; set +a; python3 service/scripts/rewrite_text.py /tmp/x.txt -o 
 | `WATERMARKS_REWRITE_BACKEND` | `rewrite_text.py` hook | `print-prompt` (default) / `ollama` / `openai-compatible` |
 | `WATERMARKS_REWRITE_MODEL` | `rewrite_text.py` hook | Model name (e.g. `deepseek-v4-flash`) |
 | `WATERMARKS_REWRITE_BASE_URL` | `rewrite_text.py` hook | API base (e.g. `https://api.deepseek.com`) |
-| `WATERMARKS_REWRITE_API_KEY` | `rewrite_text.py` hook | API key — env only, never on argv |
+| `WATERMARKS_REWRITE_API_KEY` | `rewrite_text.py` hook | API key - env only, never on argv |
 | `WATERMARKS_REWRITE_ALLOW_REMOTE` | `rewrite_text.py` hook | `1` to allow non-loopback endpoints |
 | `WATERMARKS_REWRITE_REASONING_EFFORT` | `rewrite_text.py` hook | `none` (default) / `low` / `medium` / `high` / `off` |
 
@@ -246,7 +246,7 @@ full upstream `requirements.txt`, which adds `torch`/`diffusers` for the
 upstream VAE bypass this project does not use).
 
 On Windows use `setup_synthid.ps1` (`-Dir`, `-Ref`, `-Full`), which creates the
-venv at `.venv\Scripts\` — the layout `image_meta.py` already looks for on
+venv at `.venv\Scripts\`; the layout `image_meta.py` already looks for on
 `os.name == "nt"`.
 
 ### Option 2: local Docker build
@@ -266,7 +266,7 @@ The image is built locally from the upstream source at build time. It is not
 published, so it does not redistribute the upstream code.
 
 V4 scoring uses `artifacts/spectral_codebook_v4.npz` from the upstream checkout
-(~220 MB). This is **detection/scoring only** — it does not remove pixel
+(~220 MB). This is **detection/scoring only**; it does not remove pixel
 watermarks.
 
 ## Optional CtrlRegen pixel removal
@@ -297,7 +297,7 @@ NOAI_WATERMARK_DIR=~/noai-watermark \
 On Windows use `setup_ctrlregen.ps1` (same flags as `-Dir`, `-Ref`, `-Python`);
 the venv lands in `.venv\Scripts\`, which `clean_image.py` already resolves.
 It picks the torch wheel index from the GPU's **compute capability** rather
-than the CUDA version `nvidia-smi` prints — that number is the maximum the
+than the CUDA version `nvidia-smi` prints; that number is the maximum the
 *driver* supports, and drivers are backward compatible, so deriving the wheel
 tag from it installs `cu130` on a Pascal card whose kernels were dropped in
 `cu128`. The script forces `cu126` below compute capability 7.5 and then
@@ -326,7 +326,7 @@ defaults to 50 (effective denoising steps ≈ steps × strength).
 CtrlRegen is a 512×512 Stable Diffusion 1.5 ControlNet. The backend resolves
 this for arbitrary inputs, so no extra tiling is exposed here:
 
-- **≤512 px:** single pass — center-crop/resize to 512, regenerate, resize back.
+- **≤512 px:** single pass; center-crop/resize to 512, regenerate, resize back.
 - **>512 px:** automatic overlapping tiling (512 px tiles, 192 px overlap),
   width/height aligned to multiples of 8, then cosine-blended seams.
 - **Either path:** output is resized to the original size and color-matched to
@@ -339,7 +339,7 @@ and overlap are hardcoded upstream and are not exposed as flags.
 ### Compute, gated models, and verification
 
 Expect ~10 GB of model downloads; a GPU is strongly recommended and CPU runs
-are slow. Some upstream models are gated, so export `HF_TOKEN` (env only —
+are slow. Some upstream models are gated, so export `HF_TOKEN` (env only;
 never argv). `clean_ctrlregen.py` refuses to auto-install dependencies; run
 `setup_ctrlregen.sh` first.
 
@@ -362,7 +362,7 @@ docker run --rm -e HF_TOKEN="$HF_TOKEN" \
 
 For **controlled experiments**, an optional external harness wraps
 [`THU-BPM/MarkLLM`](https://github.com/THU-BPM/MarkLLM) (Apache-2.0) to
-watermark test text and re-detect it after a Layer B rewrite — e.g. prove that
+watermark test text and re-detect it after a Layer B rewrite; e.g. prove that
 a KGW (Kirchenbauer, your "open-LLM" row) or SynthID-Text (Gemini row) mark
 disappears under your rewrite. It is a **verification harness, not an oracle**:
 MarkLLM detection is only valid against the *same* scheme config + keys used at
@@ -407,7 +407,7 @@ runs work but are slow, and the model download is a few GB.
 Hardening knobs:
 
 - `--offline` on the adapter (or any MarkLLM run) loads the scoring model from
-  the Hugging Face cache only — zero network egress; fails fast if not cached.
+  the Hugging Face cache only; zero network egress; fails fast if not cached.
   Custom remote code is never executed (transformers `trust_remote_code` is
   never enabled).
 - `WATERMARKS_MARKLLM_RLIMIT_AS=<bytes>` (env, POSIX) applies an address-space
@@ -429,18 +429,18 @@ docker run --rm --user "$(id -u):$(id -g)" -v "$(pwd):/data" \
 For **controlled experiments on images**, an optional external harness wraps
 [`THU-BPM/MarkDiffusion`](https://github.com/THU-BPM/MarkDiffusion) (Apache-2.0),
 a *generative watermarking* toolkit for latent diffusion models (it embeds marks
-— it does not remove them). We use it for three things:
+it does not remove them). We use it for three things:
 
 1. **Verification harness** (like MarkLLM, but for images): watermark a test
    image with a scheme, run removal, and re-detect with the *same* scheme config
-   — e.g. prove a Tree-Ring-class mark clears under your pipeline. It is a
+  ; e.g. prove a Tree-Ring-class mark clears under your pipeline. It is a
    **verification harness, not an oracle**: detection requires the generating
    model (and keys for key-based schemes), so it cannot certify a vendor
    detector will fail on an arbitrary image.
 2. **Optional pixel-removal engine**: its `DiffusionPurification` regeneration
    attack is exposed as `clean_image.py --remove-pixel diffusion`, an
    alternative to CtrlRegen. It is **blind** regeneration (no ControlNet
-   conditioning), so it drifts image content more than CtrlRegen — conservative
+   conditioning), so it drifts image content more than CtrlRegen; conservative
    strength default (`0.3`), treated as a fallback/comparison, never a
    guarantee.
 3. **Local same-scheme detector** for Tree-Ring-class marks, partially filling
@@ -533,20 +533,20 @@ Prefer a **non-origin** model for Layer B (do not rewrite Claude text with Claud
 
 Text watermarks live in **the wording itself**: the signal is spread across token choices, so nearly every sentence carries a little of it. Two consequences follow, and they are why Layer B is honestly described as *best-effort* rather than a magic eraser.
 
-1. **Removal means rewording, not restructuring.** Shuffling paragraphs, changing headings, or light touch-ups barely move the signal. Stripping a statistical mark requires rewriting a substantial fraction of the text — sentence by sentence, not section by section.
+1. **Removal means rewording, not restructuring.** Shuffling paragraphs, changing headings, or light touch-ups barely move the signal. Stripping a statistical mark requires rewriting a substantial fraction of the text; sentence by sentence, not section by section.
 
 2. **Rewording degrades the copy.** Any rewrite replaces the original word choices with the rewriting model's, which flattens tone, voice, and precision. On production copy (SEO, marketing, client work) that degradation is real and often visible to the people who care most about the writing. It is like taking text from a top-tier model and asking a less capable model to rewrite it from scratch: the result cannot exceed the rewrite model's ceiling.
 
 Which leads to the honest full-circle question:
 
-> If the plan is to rewrite the text with a cheaper model anyway, why pay for a premium model in the first place? Generating directly with the cheaper model is simpler, cheaper, and produces the same — or better — end result.
+> If the plan is to rewrite the text with a cheaper model anyway, why pay for a premium model in the first place? Generating directly with the cheaper model is simpler, cheaper, and produces the same; or better; end result.
 
-Layer B makes sense when you specifically want the premium model's **thinking and drafting** and accept a rewrite pass to satisfy a hygiene or privacy requirement — not as a cheap route to mark-free text.
+Layer B makes sense when you specifically want the premium model's **thinking and drafting** and accept a rewrite pass to satisfy a hygiene or privacy requirement; not as a cheap route to mark-free text.
 
 **When to skip Layer B:**
 
-- **Quality matters more than hygiene:** use the lossless path — Layer A Unicode scrub plus the file metadata cleaners — and keep the original prose.
-- **Rewriting anyway:** use a **non-origin** model (rewriting with the origin model can re-stamp the text), and remember residual risk remains — no tool can certify a vendor detector will fail.
+- **Quality matters more than hygiene:** use the lossless path; Layer A Unicode scrub plus the file metadata cleaners; and keep the original prose.
+- **Rewriting anyway:** use a **non-origin** model (rewriting with the origin model can re-stamp the text), and remember residual risk remains; no tool can certify a vendor detector will fail.
 
 ---
 
@@ -566,7 +566,7 @@ Layer B makes sense when you specifically want the premium model's **thinking an
 
 ExifTool writes PDFs **incrementally**. `exiftool -all=` appends a
 `%BeginExifToolUpdate` block that frees the Info object and drops `/Info` from
-the trailer — but the original metadata bytes stay in the file verbatim, and
+the trailer; but the original metadata bytes stay in the file verbatim, and
 exiftool itself can undo the edit with `-PDF-update:all=`. The command exits
 `0`, viewers show no metadata, and the file gets *larger*, which is the tell.
 
@@ -576,7 +576,7 @@ from its object graph and drops the now-unreferenced objects. Without `qpdf`
 installed the clean still runs, but it says so:
 
 ```
-warning: exiftool PDF edits are incremental — the original metadata bytes
+warning: exiftool PDF edits are incremental; the original metadata bytes
 remain recoverable; install qpdf for a structural rewrite
 ```
 
@@ -603,7 +603,7 @@ Industry two-layer context (C2PA + imperceptible watermark): [Institute of AI PM
 | Option | Removes | Notes |
 | --- | --- | --- |
 | Unicode scrub (Layer A) | ZWSP, bidi, tags, exotic spaces, … | Safe default for text |
-| Rewrite (Layer B) | Statistical token marks (best-effort) | Always offered by skill; costs style — see [Disclaimer](#disclaimer-what-removing-a-text-watermark-costs) |
+| Rewrite (Layer B) | Statistical token marks (best-effort) | Always offered by skill; costs style - see [Disclaimer](#disclaimer-what-removing-a-text-watermark-costs) |
 | Container/metadata strip | File provenance | See format table |
 | CtrlRegen pixel removal (optional) | Pixel-domain image marks (SynthID-class, StegaStamp, Tree-Ring, StableSignature) | External backend; heavy compute; conservative strength default |
 | DiffusionPurification pixel removal (optional) | Pixel-domain image marks (Tree-Ring-class) | MarkDiffusion backend; blind regeneration (more drift than CtrlRegen); conservative strength default |
@@ -613,7 +613,7 @@ Matrix: [`skills/remove-ai-marks/references/removal-matrix.md`](skills/remove-ai
 
 ## Ethics and disclaimer
 
-See [`skills/remove-ai-marks/references/ethics.md`](skills/remove-ai-marks/references/ethics.md). For privacy and research on **your** content — not academic fraud or false “human-written” claims.
+See [`skills/remove-ai-marks/references/ethics.md`](skills/remove-ai-marks/references/ethics.md). For privacy and research on **your** content; not academic fraud or false “human-written” claims.
 
 **Responsible use:** This project is for content you own or are authorized to process. Users must adhere to local regulations and use it responsibly. The developers disclaim any liability for potential misuse by users.
 
@@ -627,7 +627,7 @@ make smoke                          # quick CLI smoke on fixtures
 
 ## Changelog
 
-### [v0.5.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.5.0) — service & Docker distribution, HTTP API, and verification harnesses
+### [v0.5.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.5.0): service & Docker distribution, HTTP API, and verification harnesses
 
 **Service / Docker distribution**
 
@@ -638,7 +638,7 @@ make smoke                          # quick CLI smoke on fixtures
 - **Docker / compose**: `compose.yaml` brings up the whole infra (`core` always; `markllm` / `markdiffusion` behind `profile: harness`; `ctrlregen` / `synthid` behind `profile: heavy` as local-only builds); services are prefixed `wr-`; harness/heavy services default to `command: ["--help"]` so `docker compose up --profile harness --profile heavy` exits cleanly (one-shot CLIs are run with `docker compose run`); new `make compose-check` / `compose-check.sh` validates the running stack (exit code only)
 - **GHCR publishing**: `.github/workflows/release-images.yml` publishes `core`, `markllm`, `markdiffusion` images on `v*` tags; `ctrlregen` / `synthid` are never published (upstream licensing)
 - **Env configuration**: `.env.example` + service configuration guide; `docker compose` auto-loads `.env`; `.env` is gitignored (deny-by-default)
-- **Repo hygiene**: `.gitignore` and `service/.dockerignore` are now deny-by-default — only explicitly allowed paths can be committed or sent in a build context (image contexts only ship `service/scripts/`, which is all the Dockerfiles COPY)
+- **Repo hygiene**: `.gitignore` and `service/.dockerignore` are now deny-by-default; only explicitly allowed paths can be committed or sent in a build context (image contexts only ship `service/scripts/`, which is all the Dockerfiles COPY)
 - Tests: `tests/test_http_server.py` (13 cases) for the HTTP service; all suites re-pointed at `service/scripts/`
 
 **MarkDiffusion image-watermark harness (optional)**
@@ -646,7 +646,7 @@ make smoke                          # quick CLI smoke on fixtures
 - New optional harness (external `THU-BPM/MarkDiffusion`, Apache-2.0): `markdiffusion_harness.py` with `watermark` / `detect` / `purify` subcommands for nine image schemes (Tree-Ring, Ring-ID, ROBIN, WIND, SFW, Gaussian-Shading, GaussMarker, PRC, SEAL)
 - `clean_image.py --remove-pixel diffusion` runs the MarkDiffusion `DiffusionPurification` regeneration attack as an alternative pixel-removal engine (conservative strength 0.3 default)
 - `setup_markdiffusion.sh` bootstrap (PyPI pin `1.0.2`; `--checkout` editable clone at pinned commit) + `requirements-markdiffusion.txt` + `Dockerfile.markdiffusion` and Makefile `bootstrap-markdiffusion` / `smoke-markdiffusion` / `docker-markdiffusion-build` / `docker-markdiffusion-help`
-- Mock-based tests (`tests/test_markdiffusion_harness.py`) — no torch in CI; `references/markdiffusion.md` reference doc
+- Mock-based tests (`tests/test_markdiffusion_harness.py`); no torch in CI; `references/markdiffusion.md` reference doc
 - Docs: same-scheme-only verification caveat (not a vendor-detector oracle) and blind-regeneration drift caveat in README, SKILL.md, `removal-matrix.md`, `markdiffusion.md`
 
 **MarkLLM text-watermark harness (optional)**
@@ -655,14 +655,14 @@ make smoke                          # quick CLI smoke on fixtures
 - `rewrite_text.py --markllm-scheme` runs before/after detection around a Layer B rewrite (env-gated; reports `cleared`)
 - `setup_markllm.sh` bootstrap + `requirements-markllm.txt` (pinned deps) + `Dockerfile.markllm` and Makefile `bootstrap-markllm` / `smoke-markllm` / `docker-markllm-build` / `docker-markllm-help`
 - Hardening: `--offline` cache-only model loading (no HF egress, no remote code), 1 MiB config cap, optional `WATERMARKS_MARKLLM_RLIMIT_AS` on the rewrite subprocess, pinned torch in the Dockerfile, and clone-SHA verification in `Dockerfile.markllm`
-- Mock-based tests (`tests/test_markllm_detect.py`, 21 cases) — no torch in CI; verification-harness caveat (same-config-only, not a vendor-detector oracle) documented in README, SKILL.md, `removal-matrix.md`, `vendor-notes.md`
+- Mock-based tests (`tests/test_markllm_detect.py`, 21 cases); no torch in CI; verification-harness caveat (same-config-only, not a vendor-detector oracle) documented in README, SKILL.md, `removal-matrix.md`, `vendor-notes.md`
 
 **Fixes and polish**
 
 - **Layer B**: `rewrite_text.py` now sends `reasoning_effort: "none"` by default for `openai-compatible` backends (`--reasoning-effort` / `WATERMARKS_REWRITE_REASONING_EFFORT`; `off` omits it). Reasoning models like `deepseek-v4-flash` otherwise burn ~100s of chain-of-thought on a one-line rewrite (9,894 vs 12 completion tokens)
-- **Fix markllm image build**: `requirements-markllm.txt` pinned `tokenizers==0.23.1`, which conflicts with `transformers==5.15.0` (caps `tokenizers<=0.23.0`; no 0.23.0 release exists) — now pinned `tokenizers==0.22.2`; torch moved to the CPU wheel index (`torch==2.13.0.*`) so the image is CPU-only like `Dockerfile.markdiffusion`
+- **Fix markllm image build**: `requirements-markllm.txt` pinned `tokenizers==0.23.1`, which conflicts with `transformers==5.15.0` (caps `tokenizers<=0.23.0`; no 0.23.0 release exists); now pinned `tokenizers==0.22.2`; torch moved to the CPU wheel index (`torch==2.13.0.*`) so the image is CPU-only like `Dockerfile.markdiffusion`
 - **Fix ctrlregen image build**: the 2023-era research pins (`safetensors==0.4.3`, `transformers==4.37.2` → `tokenizers<0.19`) ship no Python 3.14 wheels, so the base image is now `python:3.11-slim` (digest-pinned, multi-arch)
-- **Fix harness images at runtime**: `Dockerfile.markllm` and `Dockerfile.markdiffusion` never copied `common.py` into `/app` (pre-existing bug) — added
+- **Fix harness images at runtime**: `Dockerfile.markllm` and `Dockerfile.markdiffusion` never copied `common.py` into `/app` (pre-existing bug); added
 - **WebP**: stdlib-only inspection and metadata cleaning for RIFF `C2PA`, XMP, EXIF, and ICC profile chunks (#37)
 - **Filename sanitization**: HTTP service refuses unsafe client-supplied output names
 - **Fix markdown frontmatter cleaner** crashing on and leaking nested AI keys (#25)
@@ -677,7 +677,7 @@ make smoke                          # quick CLI smoke on fixtures
 - **Windows**: PowerShell ports of the setup bootstraps (#40)
 - **Docs**: add stars/forks shields and drop star-history chart; add MarkLLM to README references; pull request template; plan for Docker CLI + API deployment
 
-### [v0.4.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.4.0) — pixel removal, finding confidence, Windows & false-positive fixes
+### [v0.4.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.4.0): pixel removal, finding confidence, Windows & false-positive fixes
 
 **Optional CtrlRegen pixel removal (external backend)**
 
@@ -710,16 +710,16 @@ make smoke                          # quick CLI smoke on fixtures
 - Dependabot config + security-path CODEOWNERS; bump scipy/numpy/opencv-python/scikit-learn/pywavelets and the base image to Python 3.14-slim
 - Mock-based CtrlRegen tests (no torch in CI)
 
-### [v0.3.2](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.3.2) — security hardening (safe writes, HTTP client, CI supply chain)
+### [v0.3.2](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.3.2): security hardening (safe writes, HTTP client, CI supply chain)
 
-- **Safe, atomic output writes**: every cleaner now writes via temp-file + atomic rename (`safe_write_bytes` / `safe_write_text`), refuses symlinked destinations, and creates `.bak` backups through the same safe path — pre-placed symlinks (e.g. in `/tmp` or download dirs) can no longer redirect a clean write onto an arbitrary file
-- **`rewrite_text.py` HTTP client hardening**: redirects are refused outright, so an API key in the `Authorization` header can never be re-sent to an unvalidated host; non-loopback endpoints are **denied by default** (opt in with `--allow-remote` or `WATERMARKS_REWRITE_ALLOW_REMOTE=1`); only http(s) schemes are accepted; `--api-key` was removed — keys are env-only via `WATERMARKS_REWRITE_API_KEY`
+- **Safe, atomic output writes**: every cleaner now writes via temp-file + atomic rename (`safe_write_bytes` / `safe_write_text`), refuses symlinked destinations, and creates `.bak` backups through the same safe path; pre-placed symlinks (e.g. in `/tmp` or download dirs) can no longer redirect a clean write onto an arbitrary file
+- **`rewrite_text.py` HTTP client hardening**: redirects are refused outright, so an API key in the `Authorization` header can never be re-sent to an unvalidated host; non-loopback endpoints are **denied by default** (opt in with `--allow-remote` or `WATERMARKS_REWRITE_ALLOW_REMOTE=1`); only http(s) schemes are accepted; `--api-key` was removed; keys are env-only via `WATERMARKS_REWRITE_API_KEY`
 - **Resource caps**: default max input 1 GiB → 256 MiB, new 64 MiB stdin cap, DOCX/ODT zip budget 512 MiB → 128 MiB, and `RLIMIT_AS`/`RLIMIT_FSIZE` applied to exiftool/c2patool/SynthID subprocesses (all caps env-overridable)
 - **Supply chain**: CI actions SHA-pinned with `permissions: contents: read`, pinned dev deps (`requirements-dev.txt`), a `pip-audit` step, and a new CodeQL workflow; the Docker image now runs as an unprivileged user with pip pinned
 - **Scorer deps**: Pillow bumped 10.4.0 → 12.3.0 (24 known CVEs); API usage verified against the pinned upstream commit
 - Tests: 18 new security regression tests (60 total, all passing)
 
-### [v0.3.1](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.3.1) — stronger Layer B statistical-watermark rewrite
+### [v0.3.1](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.3.1): stronger Layer B statistical-watermark rewrite
 
 - `rewrite_text.py` default paraphrase now performs an explicit **word-choice + syntax** attack (clause order, connectors, transition words, sentence boundaries, function words) rather than a generic rewrite
 - New `--strength humanize`: zero-shot "write like a human" pass targeting formulaic AI-style phrasing
@@ -731,7 +731,7 @@ make smoke                          # quick CLI smoke on fixtures
 - Residual-risk reporting now distinguishes short/highly predictable text (lower risk) from long, high-entropy prose (higher risk)
 - Docs updated in `SKILL.md`, `removal-matrix.md`, and `vendor-notes.md`; tests cover new prompts, divergence scoring, and candidate selection
 
-### [v0.3.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.3.0) — optional SynthID pixel scoring
+### [v0.3.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.3.0): optional SynthID pixel scoring
 
 - Optional pixel-domain SynthID scorer via an external [`aloshdenny/reverse-SynthID`](https://github.com/aloshdenny/reverse-SynthID) checkout (`score_synthid.py`); surfaced in `inspect_image.py` / `clean_image.py` with `REVERSE_SYNTHID_DIR` or `--synthid-dir`
 - `setup_synthid.sh` bootstrap (scorer-only dependencies; `--full` installs upstream requirements); `Dockerfile.synthid` plus `make docker-synthid-build` / `docker-synthid-help`
@@ -739,13 +739,13 @@ make smoke                          # quick CLI smoke on fixtures
 - Tests for the scorer adapter, CLI unavailable path, JSON parsing, and runtime errors
 - Docs: detection/scoring only (no pixel removal); upstream code is not bundled and remains under its non-commercial Research License
 
-### [v0.2.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.2.0) — c2patool false-positive fix
+### [v0.2.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.2.0): c2patool false-positive fix
 
 - `image_meta.py`: `has_manifest` no longer flags `Error: No claim found` / `No JUMBF data found` as a manifest (operator-precedence bug: the negative markers now veto every positive branch)
 - New `tests/test_c2patool_report.py` (4 cases: no claim, no JUMBF, genuine manifest, tool absent)
 - Docs: fixed `c2patool` links (repo moved to `contentauth/c2pa-rs`); added a disclaimer on the quality cost of text-watermark removal
 
-### [v0.1.0](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.1.0) — packaging polish + provenance honesty
+### [v0.1.0](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.1.0): packaging polish + provenance honesty
 
 - `Makefile` (`test` / `smoke` / `install-skill`) and `pytest.ini`
 - Fixture samples for Markdown, HTML, SVG; PDF degraded-clean test
@@ -754,7 +754,7 @@ make smoke                          # quick CLI smoke on fixtures
 - Reference: Institute of AI PM C2PA/SynthID guide
 - Soft-binding and pixel/audio/video watermarks explicitly out of scope in skill/matrix/ethics
 
-### [v0.0.1](https://github.com/guillaumemeyer/watermarks-remover/releases/tag/v0.0.1) — initial multi-vendor release
+### [v0.0.1](https://github.com/yasir-mo/claude-watermarks-remover/releases/tag/v0.0.1): initial multi-vendor release
 
 - Agent skill `remove-ai-marks` (replaces Claude-only `remove-claude-marks`)
 - **Layer A:** invisible Unicode / bidi / tag chars / space homoglyphs (`inspect_text` / `clean_text`)
@@ -766,7 +766,7 @@ make smoke                          # quick CLI smoke on fixtures
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT; see [LICENSE](LICENSE).
 
 ## References
 
@@ -776,13 +776,13 @@ MIT — see [LICENSE](LICENSE).
 - [C2PA](https://c2pa.org/) / [c2patool](https://github.com/contentauth/c2pa-rs/tree/main/cli)
 - Kirchenbauer et al., [*A Watermark for Large Language Models*](https://arxiv.org/abs/2301.10226)
 - [THU-BPM/MarkLLM](https://github.com/THU-BPM/MarkLLM) (unified toolkit for evaluating LLM watermarking algorithms)
-- Pan et al., [*MarkDiffusion: An Open-Source Toolkit for Generative Watermarking of Latent Diffusion Models*](https://arxiv.org/abs/2509.10569) (JMLR) — the embedding toolkit this repo's optional image-watermark harness wraps — [code](https://github.com/THU-BPM/MarkDiffusion), [docs](https://markdiffusion.readthedocs.io)
+- Pan et al., [*MarkDiffusion: An Open-Source Toolkit for Generative Watermarking of Latent Diffusion Models*](https://arxiv.org/abs/2509.10569) (JMLR); the embedding toolkit this repo's optional image-watermark harness wraps; [code](https://github.com/THU-BPM/MarkDiffusion), [docs](https://markdiffusion.readthedocs.io)
 - Zhang et al., [*Watermarks in the Sand: Impossibility of Strong Watermarking for Generative Models*](https://arxiv.org/abs/2311.04378) (ICML 2024)
 - [google-deepmind/synthid-text](https://github.com/google-deepmind/synthid-text) (research reference; not used for detection here)
 - [aloshdenny/reverse-SynthID](https://github.com/aloshdenny/reverse-SynthID) (research reference)
-- Liu et al., [*Image Watermarks are Removable Using Controllable Regeneration from Clean Noise*](https://arxiv.org/abs/2410.05470) (ICLR 2025) — the pixel-regeneration method the optional CtrlRegen backend implements — [code](https://github.com/yepengliu/CtrlRegen)
-- Kassis & Hengartner, [*UnMarker: A Universal Attack on Defensive Image Watermarking*](https://arxiv.org/abs/2405.08363) (arXiv:2405.08363; IEEE S&P 2025) — a universal watermark attack compared on a different metric than CtrlRegen
-- Goonatilake & Ateniese, [*Removing the Watermark Is Not Enough: Forensic Stealth in Generative-AI Watermark Removal*](https://arxiv.org/abs/2605.09203) (arXiv:2605.09203) — motivates the conservative-strength default: removal can still leave forensic traces
+- Liu et al., [*Image Watermarks are Removable Using Controllable Regeneration from Clean Noise*](https://arxiv.org/abs/2410.05470) (ICLR 2025); the pixel-regeneration method the optional CtrlRegen backend implements; [code](https://github.com/yepengliu/CtrlRegen)
+- Kassis & Hengartner, [*UnMarker: A Universal Attack on Defensive Image Watermarking*](https://arxiv.org/abs/2405.08363) (arXiv:2405.08363; IEEE S&P 2025); a universal watermark attack compared on a different metric than CtrlRegen
+- Goonatilake & Ateniese, [*Removing the Watermark Is Not Enough: Forensic Stealth in Generative-AI Watermark Removal*](https://arxiv.org/abs/2605.09203) (arXiv:2605.09203); motivates the conservative-strength default: removal can still leave forensic traces
 - [mertizci/noai-watermark](https://github.com/mertizci/noai-watermark) (CLI/Python toolkit for SynthID/StableSignature/TreeRing removal and AI metadata stripping)
 - [0xROOTPLS/DeSynth](https://github.com/0xROOTPLS/DeSynth) (SynthID removal for OpenAI/Google images)
 - Institute of AI PM, [*AI Content Provenance and Watermarking: The PM's Guide to C2PA and SynthID*](https://www.institutepm.com/knowledge-hub/ai-content-provenance-watermarking) (two-layer industry model: C2PA + imperceptible watermark / soft binding; SB 942 / EU AI Act Art. 50 context)

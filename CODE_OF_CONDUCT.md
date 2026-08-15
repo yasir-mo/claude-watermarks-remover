@@ -61,7 +61,7 @@ representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement through GitHub
 by opening a private security advisory or contacting the repository maintainers
-via [GitHub](https://github.com/guillaumemeyer/watermarks-remover).
+via [GitHub](https://github.com/yasir-mo/claude-watermarks-remover).
 
 All complaints will be reviewed and investigated promptly and fairly.
 
